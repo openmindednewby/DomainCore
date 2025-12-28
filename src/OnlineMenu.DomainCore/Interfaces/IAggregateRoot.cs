@@ -1,4 +1,4 @@
-namespace OnlineMenu.DomainCore.Interfaces;
+namespace DomainCore.Interfaces;
 
 /// <summary>
 /// Marker interface for aggregate root entities in Domain-Driven Design.

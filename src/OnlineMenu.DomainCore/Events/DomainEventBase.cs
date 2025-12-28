@@ -1,4 +1,4 @@
-namespace OnlineMenu.DomainCore.Events;
+namespace DomainCore.Events;
 
 /// <summary>
 /// Base class for all domain events.

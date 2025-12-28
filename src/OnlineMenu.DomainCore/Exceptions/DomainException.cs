@@ -1,4 +1,4 @@
-namespace OnlineMenu.DomainCore.Exceptions;
+namespace DomainCore.Exceptions;
 
 /// <summary>
 /// Base exception for domain-specific errors.

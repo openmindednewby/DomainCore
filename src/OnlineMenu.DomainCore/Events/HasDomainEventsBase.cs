@@ -1,6 +1,6 @@
-using OnlineMenu.DomainCore.Interfaces;
+using DomainCore.Interfaces;
 
-namespace OnlineMenu.DomainCore.Events;
+namespace DomainCore.Events;
 
 /// <summary>
 /// Base class for entities that can raise domain events.

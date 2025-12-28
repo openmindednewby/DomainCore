@@ -1,6 +1,6 @@
-# OnlineMenu.DomainCore
+# DomainCore
 
-[![NuGet](https://img.shields.io/nuget/v/OnlineMenu.DomainCore.svg)](https://www.nuget.org/packages/OnlineMenu.DomainCore)
+[![NuGet](https://img.shields.io/nuget/v/DomainCore.svg)](https://www.nuget.org/packages/DomainCore)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Domain primitives, base entities, aggregate roots, and domain events for building Domain-Driven Design applications with .NET.
@@ -8,7 +8,7 @@ Domain primitives, base entities, aggregate roots, and domain events for buildin
 ## 📦 Installation
 
 ```bash
-dotnet add package OnlineMenu.DomainCore
+dotnet add package DomainCore
 ```
 
 ## 🚀 Features
@@ -25,7 +25,7 @@ dotnet add package OnlineMenu.DomainCore
 ### Basic Entity
 
 ```csharp
-using OnlineMenu.DomainCore.Entities;
+using DomainCore.Entities;
 
 public class Product : BaseEntity
 {
@@ -44,7 +44,7 @@ public class Product : BaseEntity
 ### Multi-Tenant Entity
 
 ```csharp
-using OnlineMenu.DomainCore.Entities;
+using DomainCore.Entities;
 
 public class Order : BaseTenantEntity
 {
@@ -66,7 +66,7 @@ public class Order : BaseTenantEntity
 ### Domain Events
 
 ```csharp
-using OnlineMenu.DomainCore.Events;
+using DomainCore.Events;
 
 public class OrderPlacedEvent : DomainEventBase
 {
@@ -135,5 +135,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 💬 Support
 
-- 🐛 Issues: [GitHub Issues](https://github.com/yourusername/OnlineMenu.DomainCore/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/yourusername/OnlineMenu.DomainCore/discussions)
+- 🐛 Issues: [GitHub Issues](https://github.com/yourusername/DomainCore/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/yourusername/DomainCore/discussions)

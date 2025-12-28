@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using OnlineMenu.DomainCore.Events;
+using DomainCore.Events;
 
-namespace OnlineMenu.DomainCore.Entities;
+namespace DomainCore.Entities;
 
 /// <summary>
 /// Base entity for all aggregates and entities.

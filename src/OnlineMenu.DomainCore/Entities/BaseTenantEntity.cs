@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace OnlineMenu.DomainCore.Entities;
+namespace DomainCore.Entities;
 
 /// <summary>
 /// Base entity for all tenant-scoped entities.
