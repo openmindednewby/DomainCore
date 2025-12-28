@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>OnlineMenu.DomainCore</RootNamespace>
-    <PackageId>OnlineMenu.DomainCore</PackageId>
-    <Description>Shared domain primitives and base entities for OnlineMenu applications. Provides base classes for entities, aggregate roots, and domain events following Domain-Driven Design principles.</Description>
+    <RootNamespace>DomainCore</RootNamespace>
+    <PackageId>DomainCore</PackageId>
+    <Description>Shared domain primitives and base entities for applications. Provides base classes for entities, aggregate roots, and domain events following Domain-Driven Design principles.</Description>
   </PropertyGroup>
 
   <ItemGroup>
