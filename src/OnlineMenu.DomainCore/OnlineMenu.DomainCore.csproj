@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>OnlineMenu.DomainCore</RootNamespace>
+    <PackageId>OnlineMenu.DomainCore</PackageId>
+    <Description>Shared domain primitives and base entities for OnlineMenu applications. Provides base classes for entities, aggregate roots, and domain events following Domain-Driven Design principles.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>
