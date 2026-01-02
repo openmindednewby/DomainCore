@@ -1,8 +1,11 @@
-[CmdletBinding()]
+[CmdletBinding(DefaultParameterSetName = "Bump")]
 param(
-  [Parameter(Mandatory = $true)]
+  [Parameter(Mandatory = $true, ParameterSetName = "Bump")]
   [ValidateSet("minor", "major")]
   [string]$Bump,
+
+  [Parameter(Mandatory = $true, ParameterSetName = "UseCurrent")]
+  [switch]$UseCurrentVersion,
 
   [string]$ApiKey = $env:NUGET_API_KEY,
 
@@ -138,48 +141,90 @@ if (-not (Test-Path $propsPath)) {
   throw "Missing file: $propsPath"
 }
 
+$propsOriginalText = Get-Content -Path $propsPath -Raw
+
 $currentVersion = Get-VersionFromPropsFile -PropsPath $propsPath
-$newVersion = Get-BumpedVersion -CurrentVersion $currentVersion -Bump $Bump
+$targetVersion = $currentVersion
+$shouldUpdateVersionInPropsFile = $false
+
+switch ($PSCmdlet.ParameterSetName) {
+  "Bump" {
+    $targetVersion = Get-BumpedVersion -CurrentVersion $currentVersion -Bump $Bump
+    $shouldUpdateVersionInPropsFile = $true
+  }
+  "UseCurrent" {
+    $targetVersion = $currentVersion
+    $shouldUpdateVersionInPropsFile = $false
+  }
+  default {
+    throw "Unexpected parameter set: $($PSCmdlet.ParameterSetName)"
+  }
+}
 
 Write-Host "Repo: $repoRoot"
-Write-Host "Version: $currentVersion -> $newVersion"
+Write-Host "Version: $currentVersion -> $targetVersion"
 
-Set-VersionInPropsFile -PropsPath $propsPath -Version $newVersion
-
-$packTarget = Get-PackTarget -RepoRoot $repoRoot
-$artifactsDir = Join-Path $repoRoot "artifacts"
-New-Item -ItemType Directory -Force -Path $artifactsDir | Out-Null
-
-Invoke-DotNet -Args @("restore", $packTarget)
-Invoke-DotNet -Args @("build", $packTarget, "-c", "Release", "--no-restore")
-Invoke-DotNet -Args @("pack", $packTarget, "-c", "Release", "-o", $artifactsDir, "--no-build", "/p:ContinuousIntegrationBuild=true")
-
-$nupkgs = @(
-  Get-ChildItem -Path $artifactsDir -Filter "*.$newVersion.nupkg" -File -ErrorAction SilentlyContinue |
-  Where-Object { $_.Name -notlike "*.symbols.nupkg" }
-)
-
-$snupkgs = @(Get-ChildItem -Path $artifactsDir -Filter "*.$newVersion.snupkg" -File -ErrorAction SilentlyContinue)
-
-if ($nupkgs.Count -eq 0) {
-  throw "No .nupkg files found for version $newVersion under $artifactsDir"
+if ($shouldUpdateVersionInPropsFile) {
+  Set-VersionInPropsFile -PropsPath $propsPath -Version $targetVersion
 }
 
-Write-Host "Artifacts:"
-$nupkgs | ForEach-Object { Write-Host "  - $($_.Name)" }
-$snupkgs | ForEach-Object { Write-Host "  - $($_.Name)" }
+try {
+  if ($ApiKey -and $ApiKey -match "-Bump") {
+    throw "Your -ApiKey value contains '-Bump'. Check your command formatting (missing space) and try: .\\publish-nuget.ps1 -Bump minor -ApiKey YOUR_KEY"
+  }
 
-if ($SkipPush) {
-  Write-Host "SkipPush enabled; not publishing to $Source"
-  exit 0
+  $packTarget = Get-PackTarget -RepoRoot $repoRoot
+  $artifactsDir = Join-Path $repoRoot "artifacts"
+  New-Item -ItemType Directory -Force -Path $artifactsDir | Out-Null
+
+  Invoke-DotNet -Args @("restore", $packTarget)
+  Invoke-DotNet -Args @("build", $packTarget, "-c", "Release", "--no-restore")
+  Invoke-DotNet -Args @("pack", $packTarget, "-c", "Release", "-o", $artifactsDir, "--no-build", "/p:ContinuousIntegrationBuild=true")
+
+  $nupkgs = @(
+    Get-ChildItem -Path $artifactsDir -Filter "*.$targetVersion.nupkg" -File -ErrorAction SilentlyContinue |
+    Where-Object { $_.Name -notlike "*.symbols.nupkg" }
+  )
+
+  $snupkgs = @(Get-ChildItem -Path $artifactsDir -Filter "*.$targetVersion.snupkg" -File -ErrorAction SilentlyContinue)
+
+  if ($nupkgs.Count -eq 0) {
+    throw "No .nupkg files found for version $targetVersion under $artifactsDir"
+  }
+
+  Write-Host "Artifacts:"
+  $nupkgs | ForEach-Object { Write-Host "  - $($_.Name)" }
+  $snupkgs | ForEach-Object { Write-Host "  - $($_.Name)" }
+
+  if ($SkipPush) {
+    Write-Host "SkipPush enabled; not publishing to $Source"
+    exit 0
+  }
+
+  if (-not $ApiKey) {
+    throw "Missing NuGet API key. Set NUGET_API_KEY env var or pass -ApiKey."
+  }
+
+  foreach ($pkg in $nupkgs) {
+    Invoke-DotNet -Args @("nuget", "push", $pkg.FullName, "--api-key", $ApiKey, "--source", $Source, "--skip-duplicate")
+  }
+
+  foreach ($pkg in $snupkgs) {
+    try {
+      Invoke-DotNet -Args @("nuget", "push", $pkg.FullName, "--api-key", $ApiKey, "--source", $Source, "--skip-duplicate")
+    }
+    catch {
+      Write-Warning "Symbol push failed for '$($pkg.Name)'. The main package may already be published. Details: $($_.Exception.Message)"
+    }
+  }
+
+  Write-Host "Done."
 }
+catch {
+  if ($shouldUpdateVersionInPropsFile) {
+    Set-Content -Path $propsPath -Value $propsOriginalText -Encoding utf8
+    Write-Warning "Rolled back version change in Directory.Build.props due to failure."
+  }
 
-if (-not $ApiKey) {
-  throw "Missing NuGet API key. Set NUGET_API_KEY env var or pass -ApiKey."
+  throw
 }
-
-foreach ($pkg in @($nupkgs + $snupkgs)) {
-  Invoke-DotNet -Args @("nuget", "push", $pkg.FullName, "--api-key", $ApiKey, "--source", $Source, "--skip-duplicate")
-}
-
-Write-Host "Done."

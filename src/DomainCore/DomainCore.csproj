@@ -6,8 +6,4 @@
     <Description>Shared domain primitives and base entities for applications. Provides base classes for entities, aggregate roots, and domain events following Domain-Driven Design principles.</Description>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
-  </ItemGroup>
-
 </Project>
