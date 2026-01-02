@@ -129,11 +129,22 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🔗 Related Packages
 
-- [OnlineMenu.Security](https://www.nuget.org/packages/OnlineMenu.Security) - Security claims and roles
-- [OnlineMenu.MultiTenancy.EntityFrameworkCore](https://www.nuget.org/packages/OnlineMenu.MultiTenancy.EntityFrameworkCore) - Multi-tenant EF Core support
-- [OnlineMenu.Identity.Abstractions](https://www.nuget.org/packages/OnlineMenu.Identity.Abstractions) - Authentication abstractions
+- [Security.Claims](https://www.nuget.org/packages/Security.Claims) - Security claims and roles
+- [MultiTenancy.EntityFrameworkCore](https://www.nuget.org/packages/MultiTenancy.EntityFrameworkCore) - Multi-tenant EF Core support
+- [Identity.Abstractions](https://www.nuget.org/packages/Identity.Abstractions) - Authentication abstractions
 
 ## 💬 Support
 
 - 🐛 Issues: [GitHub Issues](https://github.com/yourusername/DomainCore/issues)
 - 💬 Discussions: [GitHub Discussions](https://github.com/yourusername/DomainCore/discussions)
+
+## How to Publish
+
+```bash
+cd  C:\desktopContents\projects\SaaS\NuGetPackages\DomainCore
+.\publish-nuget.ps1 -ApiKey XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -Bump minor -SkipPush
+```
+Set your key: $env:NUGET_API_KEY="..." (or pass -ApiKey)
+Run minor bump + publish: publish-nuget.ps1 -Bump minor
+Run major bump + publish: publish-nuget.ps1 -Bump major
+Test without publishing: publish-nuget.ps1 -Bump minor -SkipPush
