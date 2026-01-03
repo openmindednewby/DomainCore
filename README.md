@@ -142,9 +142,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ```bash
 cd  C:\desktopContents\projects\SaaS\NuGetPackages\DomainCore
-.\publish-nuget.ps1 -ApiKey XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -Bump minor -SkipPush
+.\publish.ps1 -ApiKey XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -Bump major
+.\publish.ps1 -ApiKey XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX -Bump minor
+
 ```
-Set your key: $env:NUGET_API_KEY="..." (or pass -ApiKey)
-Run minor bump + publish: publish-nuget.ps1 -Bump minor
-Run major bump + publish: publish-nuget.ps1 -Bump major
-Test without publishing: publish-nuget.ps1 -Bump minor -SkipPush
