@@ -1,0 +1,1 @@
+src/DomainCore/Events/HasDomainEventsBase.cs 1
